@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import Input from '../components/Input';
 import Button from '../components/Button';
 import tokenToLocalStorage from '../services/localStorage';
+import { player } from '../actions';
 
-class Login extends React.Component {
+class Login extends Component {
   constructor() {
     super();
 
@@ -38,8 +40,16 @@ class Login extends React.Component {
     const { history } = this.props;
     const response = await fetch('https://opentdb.com/api_token.php?command=request');
     const data = await response.json();
+    this.playerInfo();
     tokenToLocalStorage(data);
     history.push('/game');
+  }
+
+  playerInfo = () => {
+    const { name, email } = this.state;
+    const { dispatch } = this.props;
+
+    dispatch(player({ name, email }));
   }
 
   goToSettings = () => {
@@ -94,8 +104,9 @@ class Login extends React.Component {
 
 Login.propTypes = {
   history: PropTypes.shape({
-    push: PropTypes.func.isRequired,
+    push: PropTypes.func,
   }).isRequired,
-};
+  dispatch: PropTypes.func,
+}.isRequired;
 
-export default Login;
+export default connect()(Login);
