@@ -1,8 +1,8 @@
 import React from 'react';
-import { connect } from 'react-redux';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import Input from '../components/Input';
 import Button from '../components/Button';
+import tokenToLocalStorage from '../services/localStorage';
 
 class Login extends React.Component {
   constructor() {
@@ -34,7 +34,17 @@ class Login extends React.Component {
     }
   }
 
-  sendPlayer() {
+  sendPlayer = async () => {
+    const { history } = this.props;
+    const response = await fetch('https://opentdb.com/api_token.php?command=request');
+    const data = await response.json();
+    tokenToLocalStorage(data);
+    history.push('/game');
+  }
+
+  goToSettings = () => {
+    const { history } = this.props;
+    history.push('/settings');
   }
 
   render() {
@@ -69,15 +79,23 @@ class Login extends React.Component {
           onClick={ this.sendPlayer }
           disabled={ isPlayButtonDisabled }
         />
+        <Button
+          data="btn-settings"
+          className=""
+          type="button"
+          label="Settings"
+          onClick={ this.goToSettings }
+          disabled={ false }
+        />
       </div>
     );
   }
 }
 
-// Login.propTypes = {
-// };
+Login.propTypes = {
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired,
+  }).isRequired,
+};
 
-// const mapDispatchToProps = (dispatch) => ({
-// });
-
-export default connect(null, null)(Login);
+export default Login;
