@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { fetchQuestions } from '../services/apiTrivia';
 import './Game.css';
-// import Button from '../components/Button';
 import Header from '../components/Header';
 
 class Game extends Component {
@@ -11,11 +10,11 @@ class Game extends Component {
     super();
     this.state = {
       indexQuestion: 0,
-      // gameOver: false,
       loading: true,
       correctClassName: '',
       incorrectClassName: '',
       questions: [],
+      nextButton: false,
     };
   }
 
@@ -44,20 +43,22 @@ class Game extends Component {
     }
   }
 
-  // nextQuestion = () => {
-  //   const { indexQuestion } = this.state;
-  //   const numberQuestions = 5;
-  //   if (indexQuestion < numberQuestions) {
-  //     this.setState((prevState) => ({
-  //       indexQuestion: prevState.indexQuestion + 1,
-  //     }));
-  //   } else {
-  //     this.setState(({
-  //       indexQuestion: 0,
-  //       gameOver: true,
-  //     }));
-  //   }
-  // }
+  nextQuestion = () => {
+    const { indexQuestion } = this.state;
+    console.log(indexQuestion);
+    const number = 4;
+    if (indexQuestion < number) {
+      this.setState((prevState) => ({
+        indexQuestion: prevState.indexQuestion + 1,
+        correctClassName: '',
+        incorrectClassName: '',
+        nextButton: false,
+      }));
+    } else {
+      const { history } = this.props;
+      history.push('/feedback');
+    }
+  }
 
   mixAnswers = () => {
     const { indexQuestion, questions } = this.state;
@@ -93,11 +94,11 @@ class Game extends Component {
     return `wrong-answer-${index}`;
   }
 
-  verifyAnswers = (answer) => {
-    console.log(answer.className);
+  verifyAnswers = () => {
     this.setState({
       correctClassName: 'correct-answer',
       incorrectClassName: 'incorrect_answers',
+      nextButton: true,
     });
   }
 
@@ -110,7 +111,7 @@ class Game extends Component {
   }
 
   render() {
-    const { loading, questions, indexQuestion } = this.state;
+    const { loading, questions, indexQuestion, nextButton } = this.state;
     return (
       <div>
         <Header />
@@ -127,12 +128,22 @@ class Game extends Component {
                   key={ index }
                   data-testid={ this.dataTestid(answer, index) }
                   type="button"
-                  onClick={ () => this.verifyAnswers(answer) }
+                  onClick={ () => this.verifyAnswers() }
                   disabled={ false }
                 >
                   { answer }
                 </button>
               ))}
+              {nextButton
+              && (
+                <button
+                  type="button"
+                  data-testid="btn-next"
+                  onClick={ this.nextQuestion }
+                >
+                  Next
+                </button>
+              )}
             </div>
           </div>
         )}
@@ -146,8 +157,5 @@ Game.propTypes = {
     push: PropTypes.func.isRequired,
   }).isRequired,
 };
-
-// const mapStateToProps = (state) => ({
-// });
 
 export default connect(null)(Game);
