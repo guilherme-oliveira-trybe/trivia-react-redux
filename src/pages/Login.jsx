@@ -56,11 +56,11 @@ class Login extends Component {
     const { name } = this.state;
     const { score } = this.props;
     const picture = this.gravatarImg();
-    const localStorage = [{
+    const localStorage = {
       name,
       score,
       picture,
-    }];
+    };
     return localStorage;
   }
 

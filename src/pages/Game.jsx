@@ -16,6 +16,7 @@ class Game extends Component {
       correctClassName: '',
       incorrectClassName: '',
       questions: [],
+      timer: 30,
     };
   }
 
@@ -42,6 +43,15 @@ class Game extends Component {
     } catch (error) {
       console.log(error);
     }
+  }
+
+  timer = () => {
+    const milisegundos = 1000;
+    setInterval(() => {
+      this.setState((prevState) => ({
+        timer: prevState.timer - 1,
+      }));
+    }, milisegundos);
   }
 
   // nextQuestion = () => {
@@ -110,11 +120,12 @@ class Game extends Component {
   }
 
   render() {
-    const { loading, questions, indexQuestion } = this.state;
+    const { loading, questions, indexQuestion, timer } = this.state;
+    this.timer();
     return (
       <div>
         <Header />
-        <span>GAME</span>
+        <span>{timer}</span>
         {!loading
         && (
           <div>
