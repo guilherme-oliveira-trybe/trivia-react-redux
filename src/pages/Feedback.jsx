@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 class Feedback extends React.Component {
   constructor() {
@@ -10,7 +10,7 @@ class Feedback extends React.Component {
     this.state = {
       statusAcertos: 3,
       messageFeedaback: '',
-    }
+    };
   }
 
   componentDidMount() {
@@ -28,9 +28,8 @@ class Feedback extends React.Component {
     const QUANTITY_ACERTOS = 3;
     if (statusAcertos >= 0 || statusAcertos < QUANTITY_ACERTOS) {
       return this.stateMessage('Could be better...');
-    } else if (statusAcertos >= QUANTITY_ACERTOS) {
-      return this.stateMessage('Well Done!');
     }
+    return this.stateMessage('Well Done!');
   }
 
   render() {
@@ -39,7 +38,7 @@ class Feedback extends React.Component {
       <div>
         <strong data-testid="feedback-text">{messageFeedaback}</strong>
       </div>
-    )
+    );
   }
 }
 
