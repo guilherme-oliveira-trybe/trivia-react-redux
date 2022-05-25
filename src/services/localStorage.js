@@ -3,5 +3,10 @@ export const tokenToLocalStorage = (token) => {
 };
 
 export const infoPlayerToLocalStorage = (player) => {
-  localStorage.setItem('ranking', JSON.stringify(player));
+  if (JSON.parse(localStorage.getItem('ranking'))) {
+    const ranking = JSON.parse(localStorage.getItem('ranking'));
+    localStorage.setItem('ranking', JSON.stringify([...ranking, player]));
+  } else {
+    localStorage.setItem('ranking', JSON.stringify([player]));
+  }
 };
