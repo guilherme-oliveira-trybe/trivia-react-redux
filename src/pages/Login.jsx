@@ -56,11 +56,11 @@ class Login extends Component {
     const { name } = this.state;
     const { score } = this.props;
     const picture = this.gravatarImg();
-    const localStorage = [{
+    const localStorage = {
       name,
       score,
       picture,
-    }];
+    };
     return localStorage;
   }
 
@@ -131,7 +131,7 @@ class Login extends Component {
 Login.propTypes = {
   history: PropTypes.shape({
     push: PropTypes.func,
-  }).isRequired,
+  }),
   dispatch: PropTypes.func,
 }.isRequired;
 

@@ -13,7 +13,6 @@ class Header extends Component {
   componentDidMount() {
     if (JSON.parse(localStorage.getItem('ranking'))) {
       const ranking = JSON.parse(localStorage.getItem('ranking'));
-      console.log(ranking);
       this.setState({
         name: ranking[0].name,
         score: ranking[0].score,

@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { fetchQuestions } from '../services/apiTrivia';
 import './Game.css';
 import Header from '../components/Header';
+import Timer from '../components/Timer';
 
 class Game extends Component {
   constructor() {
@@ -112,10 +113,11 @@ class Game extends Component {
 
   render() {
     const { loading, questions, indexQuestion, nextButton } = this.state;
+    const { disabled } = this.props;
     return (
       <div>
         <Header />
-        <span>GAME</span>
+        <Timer />
         {!loading
         && (
           <div>
@@ -128,8 +130,8 @@ class Game extends Component {
                   key={ index }
                   data-testid={ this.dataTestid(answer, index) }
                   type="button"
-                  onClick={ () => this.verifyAnswers() }
-                  disabled={ false }
+                  onClick={ () => this.verifyAnswers(answer) }
+                  disabled={ disabled }
                 >
                   { answer }
                 </button>
@@ -154,8 +156,12 @@ class Game extends Component {
 
 Game.propTypes = {
   history: PropTypes.shape({
-    push: PropTypes.func.isRequired,
-  }).isRequired,
-};
+    push: PropTypes.func,
+  }),
+}.isRequired;
 
-export default connect(null)(Game);
+const mapStateToProps = (state) => ({
+  disabled: state.timer.disabled,
+});
+
+export default connect(mapStateToProps)(Game);
