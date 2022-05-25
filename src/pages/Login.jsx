@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import md5 from 'crypto-js/md5';
 import Input from '../components/Input';
 import Button from '../components/Button';
-import tokenToLocalStorage from '../services/localStorage';
+import { tokenToLocalStorage, infoPlayerToLocalStorage } from '../services/localStorage';
 import { player } from '../actions';
+import fetchToken from '../services/apiTrivia';
 
 class Login extends Component {
   constructor() {
@@ -38,14 +40,38 @@ class Login extends Component {
 
   sendPlayer = async () => {
     const { history } = this.props;
-    const response = await fetch('https://opentdb.com/api_token.php?command=request');
-    const data = await response.json();
-    this.playerInfo();
-    tokenToLocalStorage(data);
+    this.playerInfoDispatch();
+    await this.allInfoToStorage();
     history.push('/game');
   }
 
-  playerInfo = () => {
+  allInfoToStorage = async () => {
+    const token = await fetchToken();
+    tokenToLocalStorage(token);
+    const playerInfo = this.playerInfoStorage();
+    infoPlayerToLocalStorage(playerInfo);
+  }
+
+  playerInfoStorage = () => {
+    const { name } = this.state;
+    const { score } = this.props;
+    const picture = this.gravatarImg();
+    const localStorage = [{
+      name,
+      score,
+      picture,
+    }];
+    return localStorage;
+  }
+
+  gravatarImg = () => {
+    const { email } = this.state;
+    const hash = md5(email).toString();
+    const url = `https://www.gravatar.com/avatar/${hash}`;
+    return url;
+  }
+
+  playerInfoDispatch = () => {
     const { name, email } = this.state;
     const { dispatch } = this.props;
 
@@ -109,4 +135,8 @@ Login.propTypes = {
   dispatch: PropTypes.func,
 }.isRequired;
 
-export default connect()(Login);
+const mapStateToProps = (state) => ({
+  score: state.player.score,
+});
+
+export default connect(mapStateToProps)(Login);

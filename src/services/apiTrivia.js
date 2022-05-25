@@ -1,11 +1,18 @@
-// export async function fetchToken() {
-//   const response = await fetch('https://opentdb.com/api_token.php?command=request');
-//   const data = await response.json();
-//   return data;
-// }
+const fetchToken = async () => {
+  try {
+    const url = 'https://opentdb.com/api_token.php?command=request';
+    const response = await fetch(url);
+    const { token } = await response.json();
+    return token;
+  } catch (err) {
+    console.error(err);
+  }
+};
 
 // export async function fetchQuestions(payload) {
 //   const response = await fetch(`https://opentdb.com/api.php?amount=5&token=${payload}`);
 //   const data = await response.json();
 //   return data;
 // }
+
+export default fetchToken;
