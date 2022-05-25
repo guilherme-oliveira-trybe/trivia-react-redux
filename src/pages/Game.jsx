@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { addQuestionsThunk } from '../actions/index';
+import fetchQuestions from '../services/apiTrivia';
 import './Game.css';
 // import Button from '../components/Button';
 
@@ -14,6 +14,7 @@ class Game extends Component {
       loading: true,
       correctClassName: '',
       incorrectClassName: '',
+      questions: [],
     };
   }
 
@@ -22,11 +23,24 @@ class Game extends Component {
   }
 
   callAPI = async () => {
-    const { dispacthAddQuestions } = this.props;
-    await dispacthAddQuestions();
-    this.setState({
-      loading: false,
-    }, () => this.verifyToken());
+    const { history } = this.props;
+    const token = localStorage.getItem('token');
+    try {
+      const questions = await fetchQuestions(token);
+      console.log(questions);
+      const number = 3;
+      if (questions.response_code === number) {
+        history.push('/');
+        localStorage.removeItem('token');
+        return;
+      }
+      this.setState({
+        loading: false,
+        questions: questions.results,
+      });
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   // nextQuestion = () => {
@@ -45,15 +59,12 @@ class Game extends Component {
   // }
 
   mixAnswers = () => {
-    const { questions } = this.props;
-    const { indexQuestion } = this.state;
-    // console.log(questions[indexQuestion].category);
+    const { indexQuestion, questions } = this.state;
     const number = 0.5;
     const answers = [...questions[indexQuestion]
       .incorrect_answers, questions[indexQuestion]
       .correct_answer]
       .sort(() => Math.random() - number);
-    // console.log(answers);
     return answers;
   }
 
@@ -66,8 +77,7 @@ class Game extends Component {
   }
 
   findIncorrectAndCorrectAnswers = (answer) => {
-    const { questions } = this.props;
-    const { indexQuestion } = this.state;
+    const { indexQuestion, questions } = this.state;
     if (answer === questions[indexQuestion]
       .correct_answer) {
       return true;
@@ -82,9 +92,10 @@ class Game extends Component {
     return `wrong-answer-${index}`;
   }
 
-  verifyAnswers = () => {
+  verifyAnswers = (answer) => {
+    console.log(answer.className);
     this.setState({
-      correctClassName: 'correct_answer',
+      correctClassName: 'correct-answer',
       incorrectClassName: 'incorrect_answers',
     });
   }
@@ -97,20 +108,8 @@ class Game extends Component {
     return incorrectClassName;
   }
 
-  verifyToken = () => {
-    const { invalidToken, history } = this.props;
-    // console.log(invalidToken);
-    if (invalidToken) {
-      history.push('/');
-      localStorage.removeItem('token');
-    }
-  }
-
   render() {
-    const { questions } = this.props;
-    const { indexQuestion, loading } = this.state;
-    // const answers = this.getAnswers();
-    // this.verifyToken();
+    const { loading, questions, indexQuestion } = this.state;
     return (
       <div>
         <span>GAME</span>
@@ -126,7 +125,7 @@ class Game extends Component {
                   key={ index }
                   data-testid={ this.dataTestid(answer, index) }
                   type="button"
-                  onClick={ this.verifyAnswers }
+                  onClick={ () => this.verifyAnswers(answer) }
                   disabled={ false }
                 >
                   { answer }
@@ -141,21 +140,12 @@ class Game extends Component {
 }
 
 Game.propTypes = {
-  dispacthAddQuestions: PropTypes.func.isRequired,
-  questions: PropTypes.arrayOf(PropTypes.object).isRequired,
-  invalidToken: PropTypes.bool.isRequired,
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
   }).isRequired,
 };
 
-const mapDispatchToProps = (dispatch) => ({
-  dispacthAddQuestions: () => dispatch(addQuestionsThunk()),
-});
+// const mapStateToProps = (state) => ({
+// });
 
-const mapStateToProps = (state) => ({
-  questions: state.game.questions,
-  invalidToken: state.game.invalidToken,
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(Game);
+export default connect(null)(Game);
