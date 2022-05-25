@@ -1,4 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import Header from '../components/Header';
 
 class Feedback extends React.Component {
   constructor() {
@@ -15,6 +17,16 @@ class Feedback extends React.Component {
 
   componentDidMount() {
     this.verifyStatusAcertos();
+  }
+
+  playAgain = () => {
+    const { history } = this.props;
+    history.push('/');
+  }
+
+  goToRanking = () => {
+    const { history } = this.props;
+    history.push('/ranking');
   }
 
   stateMessage(message) {
@@ -36,10 +48,31 @@ class Feedback extends React.Component {
     const { messageFeedaback } = this.state;
     return (
       <div>
+        <Header />
         <strong data-testid="feedback-text">{messageFeedaback}</strong>
+        <button
+          type="button"
+          data-testid="btn-play-again"
+          onClick={ this.playAgain }
+        >
+          Play Again
+        </button>
+        <button
+          type="button"
+          data-testid="btn-ranking"
+          onClick={ this.goToRanking }
+        >
+          Ranking
+        </button>
       </div>
     );
   }
 }
+
+Feedback.propTypes = {
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired,
+  }).isRequired,
+};
 
 export default Feedback;
