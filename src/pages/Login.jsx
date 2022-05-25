@@ -6,7 +6,7 @@ import Input from '../components/Input';
 import Button from '../components/Button';
 import { tokenToLocalStorage, infoPlayerToLocalStorage } from '../services/localStorage';
 import { player } from '../actions';
-import fetchToken from '../services/apiTrivia';
+import { fetchToken } from '../services/apiTrivia';
 
 class Login extends Component {
   constructor() {
