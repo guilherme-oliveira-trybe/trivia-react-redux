@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import fetchQuestions from '../services/apiTrivia';
+import { fetchQuestions } from '../services/apiTrivia';
 import './Game.css';
 // import Button from '../components/Button';
+import Header from '../components/Header';
 
 class Game extends Component {
   constructor() {
@@ -112,6 +113,7 @@ class Game extends Component {
     const { loading, questions, indexQuestion } = this.state;
     return (
       <div>
+        <Header />
         <span>GAME</span>
         {!loading
         && (

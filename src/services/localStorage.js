@@ -1,3 +1,7 @@
-export default function tokenToLocalStorage(token) {
-  localStorage.setItem('token', token.token);
-}
+export const tokenToLocalStorage = (token) => {
+  localStorage.setItem('token', token);
+};
+
+export const infoPlayerToLocalStorage = (player) => {
+  localStorage.setItem('ranking', JSON.stringify(player));
+};
