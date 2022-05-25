@@ -16,7 +16,7 @@ class Ranking extends Component {
           data-testid="btn-go-home"
           onClick={ this.goToLogin }
         >
-          Início
+          Home
         </button>
       </div>
     );
