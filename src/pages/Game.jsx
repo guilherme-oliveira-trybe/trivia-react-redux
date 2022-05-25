@@ -5,6 +5,7 @@ import { fetchQuestions } from '../services/apiTrivia';
 import './Game.css';
 // import Button from '../components/Button';
 import Header from '../components/Header';
+import Timer from '../components/Timer';
 
 class Game extends Component {
   constructor() {
@@ -16,7 +17,6 @@ class Game extends Component {
       correctClassName: '',
       incorrectClassName: '',
       questions: [],
-      timer: 30,
     };
   }
 
@@ -43,15 +43,6 @@ class Game extends Component {
     } catch (error) {
       console.log(error);
     }
-  }
-
-  timer = () => {
-    const milisegundos = 1000;
-    setInterval(() => {
-      this.setState((prevState) => ({
-        timer: prevState.timer - 1,
-      }));
-    }, milisegundos);
   }
 
   // nextQuestion = () => {
@@ -120,12 +111,12 @@ class Game extends Component {
   }
 
   render() {
-    const { loading, questions, indexQuestion, timer } = this.state;
-    this.timer();
+    const { loading, questions, indexQuestion } = this.state;
+    const { disabled } = this.props;
     return (
       <div>
         <Header />
-        <span>{timer}</span>
+        <Timer />
         {!loading
         && (
           <div>
@@ -139,7 +130,7 @@ class Game extends Component {
                   data-testid={ this.dataTestid(answer, index) }
                   type="button"
                   onClick={ () => this.verifyAnswers(answer) }
-                  disabled={ false }
+                  disabled={ disabled }
                 >
                   { answer }
                 </button>
@@ -154,11 +145,12 @@ class Game extends Component {
 
 Game.propTypes = {
   history: PropTypes.shape({
-    push: PropTypes.func.isRequired,
-  }).isRequired,
-};
+    push: PropTypes.func,
+  }),
+}.isRequired;
 
-// const mapStateToProps = (state) => ({
-// });
+const mapStateToProps = (state) => ({
+  disabled: state.timer.disabled,
+});
 
-export default connect(null)(Game);
+export default connect(mapStateToProps)(Game);
