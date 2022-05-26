@@ -6,6 +6,8 @@ import './Game.css';
 import Header from '../components/Header';
 import Timer from '../components/Timer';
 
+import { timer, disabled as diabledAction } from '../actions';
+
 class Game extends Component {
   constructor() {
     super();
@@ -16,6 +18,8 @@ class Game extends Component {
       incorrectClassName: '',
       questions: [],
       nextButton: false,
+      stopTimer: false,
+      mountedTimer: true,
     };
   }
 
@@ -59,6 +63,18 @@ class Game extends Component {
       const { history } = this.props;
       history.push('/feedback');
     }
+
+    this.resetTimerState();
+  }
+
+  resetTimerState = () => {
+    const MAX_TIMER = 30;
+    const { dispatch } = this.props;
+    this.setState({ stopTimer: false, mountedTimer: false }, () => {
+      this.setState({ mountedTimer: true });
+    });
+    dispatch(timer(MAX_TIMER));
+    dispatch(diabledAction(false));
   }
 
   mixAnswers = () => {
@@ -103,6 +119,11 @@ class Game extends Component {
     });
   }
 
+  handleClickAnswers = () => {
+    this.verifyAnswers();
+    this.setState({ stopTimer: true });
+  }
+
   chooseClassName = (answer) => {
     const { correctClassName, incorrectClassName } = this.state;
     if (this.findIncorrectAndCorrectAnswers(answer)) {
@@ -112,12 +133,13 @@ class Game extends Component {
   }
 
   render() {
-    const { loading, questions, indexQuestion, nextButton } = this.state;
+    const { loading, questions, indexQuestion,
+      nextButton, stopTimer, mountedTimer } = this.state;
     const { disabled } = this.props;
     return (
       <div>
         <Header />
-        <Timer />
+        { mountedTimer && !loading ? <Timer stop={ stopTimer } /> : ''}
         {!loading
         && (
           <div>
@@ -130,7 +152,7 @@ class Game extends Component {
                   key={ index }
                   data-testid={ this.dataTestid(answer, index) }
                   type="button"
-                  onClick={ () => this.verifyAnswers(answer) }
+                  onClick={ this.handleClickAnswers }
                   disabled={ disabled }
                 >
                   { answer }
@@ -155,6 +177,7 @@ class Game extends Component {
 }
 
 Game.propTypes = {
+  dispatch: PropTypes.func,
   history: PropTypes.shape({
     push: PropTypes.func,
   }),

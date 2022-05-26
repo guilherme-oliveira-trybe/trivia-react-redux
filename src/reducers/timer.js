@@ -1,7 +1,7 @@
 import { TIMER, DISABLED } from '../actions';
 
 const INITIAL_STATE = {
-  timer: '',
+  timer: 30,
   disabled: false,
 };
 
