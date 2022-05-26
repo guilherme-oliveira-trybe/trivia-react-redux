@@ -95,6 +95,7 @@ class Login extends Component {
           onChange={ this.handleChange }
           value={ name }
           name="name"
+          id="nameInput"
           required
         />
         <Input
@@ -105,6 +106,7 @@ class Login extends Component {
           onChange={ this.handleChange }
           value={ email }
           name="email"
+          id="emailInput"
           required
         />
         <Button
