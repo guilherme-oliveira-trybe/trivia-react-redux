@@ -5,6 +5,12 @@ import App from '../App'
 import renderWithRouterAndRedux from './helpers/renderWithRouterAndRedux';
 
 describe('Teste da página de [Login]', () => {
+  it('se a rota "/" é renderizada', () => {
+    const { history } = renderWithRouterAndRedux(<App />);
+    const { pathname } = history.location;
+    expect(pathname).toBe('/');
+  })
+
   it(`Deve renderizar os inputs de [name] e [email],
   com os respectivos data-test-ids [input-player-name]
   e [input-gravatar-email]`, () => {
@@ -56,10 +62,14 @@ describe('Teste da página de [Login]', () => {
 
   it(`Deve ser redirencionado para a rota /settings ao 
   clicar no botão [Settings]`, () => {
-    renderWithRouterAndRedux(<App />);
+    const { history } = renderWithRouterAndRedux(<App />);
     const btnSettings = screen.getByTestId('btn-settings');
     userEvent.click(btnSettings);
     expect(screen.getByTestId('settings-title')).toBeInTheDocument();
+
+    history.push('/settings');
+    const { pathname } = history.location;
+    expect(pathname).toBe('/settings')
   });
 
 })
