@@ -1,6 +1,8 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Header from '../components/Header';
+import { newPlayer } from '../actions';
 
 class Feedback extends React.Component {
   constructor() {
@@ -10,7 +12,6 @@ class Feedback extends React.Component {
     this.stateMessage = this.stateMessage.bind(this);
 
     this.state = {
-      statusAcertos: 3,
       messageFeedaback: '',
     };
   }
@@ -20,7 +21,8 @@ class Feedback extends React.Component {
   }
 
   playAgain = () => {
-    const { history } = this.props;
+    const { history, dispatch } = this.props;
+    dispatch(newPlayer());
     history.push('/');
   }
 
@@ -36,9 +38,9 @@ class Feedback extends React.Component {
   }
 
   verifyStatusAcertos() {
-    const { statusAcertos } = this.state;
+    const { statusAcertos } = this.props;
     const QUANTITY_ACERTOS = 3;
-    if (statusAcertos >= 0 || statusAcertos < QUANTITY_ACERTOS) {
+    if (statusAcertos < QUANTITY_ACERTOS) {
       return this.stateMessage('Could be better...');
     }
     return this.stateMessage('Well Done!');
@@ -46,10 +48,13 @@ class Feedback extends React.Component {
 
   render() {
     const { messageFeedaback } = this.state;
+    const { score, statusAcertos } = this.props;
     return (
       <div>
         <Header />
         <strong data-testid="feedback-text">{messageFeedaback}</strong>
+        <strong data-testid="feedback-total-score">{ score }</strong>
+        <strong data-testid="feedback-total-question">{ statusAcertos }</strong>
         <button
           type="button"
           data-testid="btn-play-again"
@@ -73,6 +78,14 @@ Feedback.propTypes = {
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
   }).isRequired,
+  dispatch: PropTypes.func.isRequired,
+  statusAcertos: PropTypes.number.isRequired,
+  score: PropTypes.number.isRequired,
 };
 
-export default Feedback;
+const mapStateToProps = (state) => ({
+  statusAcertos: state.player.assertions,
+  score: state.player.score,
+});
+
+export default connect(mapStateToProps)(Feedback);

@@ -1,8 +1,9 @@
-import { TIMER, DISABLED } from '../actions';
+import { TIMER, DISABLED, NEXT_BUTTON } from '../actions';
 
 const INITIAL_STATE = {
-  timer: '',
+  timer: 30,
   disabled: false,
+  nextButton: false,
 };
 
 const timerReduce = (state = INITIAL_STATE, action) => {
@@ -16,6 +17,11 @@ const timerReduce = (state = INITIAL_STATE, action) => {
     return {
       ...state,
       disabled: action.payload,
+    };
+  case NEXT_BUTTON:
+    return {
+      ...state,
+      nextButton: action.payload,
     };
   default:
     return state;

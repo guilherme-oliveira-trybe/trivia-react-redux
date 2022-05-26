@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import md5 from 'crypto-js/md5';
 import Input from '../components/Input';
 import Button from '../components/Button';
-import { tokenToLocalStorage, infoPlayerToLocalStorage } from '../services/localStorage';
+import { tokenToLocalStorage } from '../services/localStorage';
 import { player } from '../actions';
 import { fetchToken } from '../services/apiTrivia';
 
@@ -48,20 +48,6 @@ class Login extends Component {
   allInfoToStorage = async () => {
     const token = await fetchToken();
     tokenToLocalStorage(token);
-    const playerInfo = this.playerInfoStorage();
-    infoPlayerToLocalStorage(playerInfo);
-  }
-
-  playerInfoStorage = () => {
-    const { name } = this.state;
-    const { score } = this.props;
-    const picture = this.gravatarImg();
-    const localStorage = {
-      name,
-      score,
-      picture,
-    };
-    return localStorage;
   }
 
   gravatarImg = () => {
@@ -74,8 +60,9 @@ class Login extends Component {
   playerInfoDispatch = () => {
     const { name, email } = this.state;
     const { dispatch } = this.props;
+    const picture = this.gravatarImg();
 
-    dispatch(player({ name, email }));
+    dispatch(player({ name, email, picture }));
   }
 
   goToSettings = () => {

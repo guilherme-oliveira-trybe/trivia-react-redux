@@ -5,6 +5,9 @@ import { fetchQuestions } from '../services/apiTrivia';
 import './Game.css';
 import Header from '../components/Header';
 import Timer from '../components/Timer';
+import { infoPlayerToLocalStorage } from '../services/localStorage';
+import { timer, disabled as diabledAction,
+  disabledNextButton, updateScoreAssertions } from '../actions';
 
 class Game extends Component {
   constructor() {
@@ -15,7 +18,9 @@ class Game extends Component {
       correctClassName: '',
       incorrectClassName: '',
       questions: [],
-      nextButton: false,
+      mixedAnswers: [],
+      stopTimer: false,
+      mountedTimer: true,
     };
   }
 
@@ -38,7 +43,7 @@ class Game extends Component {
       this.setState({
         loading: false,
         questions: questions.results,
-      });
+      }, () => this.mixAnswers());
     } catch (error) {
       console.log(error);
     }
@@ -46,19 +51,37 @@ class Game extends Component {
 
   nextQuestion = () => {
     const { indexQuestion } = this.state;
-    console.log(indexQuestion);
+    const { dispatch } = this.props;
     const number = 4;
     if (indexQuestion < number) {
       this.setState((prevState) => ({
         indexQuestion: prevState.indexQuestion + 1,
         correctClassName: '',
         incorrectClassName: '',
-        nextButton: false,
-      }));
+      }), () => this.mixAnswers());
+      dispatch(disabledNextButton(false));
     } else {
+      this.allInfoToStorage();
+      dispatch(disabledNextButton(false));
       const { history } = this.props;
       history.push('/feedback');
     }
+    this.resetTimerState();
+  }
+
+  allInfoToStorage = () => {
+    const { player: { name, score, picture } } = this.props;
+    infoPlayerToLocalStorage({ name, score, picture });
+  }
+
+  resetTimerState = () => {
+    const MAX_TIMER = 30;
+    const { dispatch } = this.props;
+    this.setState({ stopTimer: false, mountedTimer: false }, () => {
+      this.setState({ mountedTimer: true });
+    });
+    dispatch(timer(MAX_TIMER));
+    dispatch(diabledAction(false));
   }
 
   mixAnswers = () => {
@@ -68,15 +91,10 @@ class Game extends Component {
       .incorrect_answers, questions[indexQuestion]
       .correct_answer]
       .sort(() => Math.random() - number);
+    this.setState({
+      mixedAnswers: answers,
+    });
     return answers;
-  }
-
-  getAnswers = () => {
-    const { loading } = this.state;
-    if (!loading) {
-      const answers = this.mixAnswers();
-      return answers;
-    }
   }
 
   findIncorrectAndCorrectAnswers = (answer) => {
@@ -95,12 +113,21 @@ class Game extends Component {
     return `wrong-answer-${index}`;
   }
 
-  verifyAnswers = () => {
+  verifyAnswers = (answer) => {
+    const { dispatch } = this.props;
     this.setState({
       correctClassName: 'correct-answer',
       incorrectClassName: 'incorrect_answers',
-      nextButton: true,
     });
+    dispatch(disabledNextButton(true));
+    if (this.findIncorrectAndCorrectAnswers(answer)) {
+      this.calculateScoreAssertions();
+    }
+  }
+
+  handleClickAnswers = (answer) => {
+    this.verifyAnswers(answer);
+    this.setState({ stopTimer: true });
   }
 
   chooseClassName = (answer) => {
@@ -111,26 +138,56 @@ class Game extends Component {
     return incorrectClassName;
   }
 
+  verifyDificult = () => {
+    const { questions, indexQuestion } = this.state;
+    const hard = 3;
+    const medium = 2;
+    const easy = 1;
+    if (questions[indexQuestion].difficulty === 'hard') {
+      return hard;
+    }
+    if (questions[indexQuestion].difficulty === 'medium') {
+      return medium;
+    }
+    return easy;
+  }
+
+  calculateScoreAssertions = () => {
+    const { responseTime, dispatch } = this.props;
+    const dificult = this.verifyDificult();
+    const number = 10;
+    const score = number + (responseTime * dificult);
+    dispatch(updateScoreAssertions(score));
+  }
+
   render() {
-    const { loading, questions, indexQuestion, nextButton } = this.state;
-    const { disabled } = this.props;
+    const { loading,
+      questions,
+      indexQuestion,
+      stopTimer,
+      mountedTimer,
+      mixedAnswers,
+    } = this.state;
+    const { disabled, nextButton } = this.props;
     return (
       <div>
         <Header />
-        <Timer />
+        { mountedTimer && !loading
+          ? <Timer stop={ stopTimer } loading={ loading } />
+          : ''}
         {!loading
         && (
           <div>
             <h2 data-testid="question-category">{questions[indexQuestion].category}</h2>
             <p data-testid="question-text">{questions[indexQuestion].question}</p>
             <div data-testid="answer-options">
-              {this.getAnswers().map((answer, index) => (
+              {mixedAnswers.map((answer, index) => (
                 <button
                   className={ this.chooseClassName(answer) }
                   key={ index }
                   data-testid={ this.dataTestid(answer, index) }
                   type="button"
-                  onClick={ () => this.verifyAnswers(answer) }
+                  onClick={ () => this.handleClickAnswers(answer) }
                   disabled={ disabled }
                 >
                   { answer }
@@ -155,13 +212,21 @@ class Game extends Component {
 }
 
 Game.propTypes = {
+  dispatch: PropTypes.func.isRequired,
   history: PropTypes.shape({
     push: PropTypes.func,
-  }),
-}.isRequired;
+  }).isRequired,
+  responseTime: PropTypes.number.isRequired,
+  disabled: PropTypes.bool.isRequired,
+  nextButton: PropTypes.bool.isRequired,
+  player: PropTypes.objectOf.isRequired,
+};
 
 const mapStateToProps = (state) => ({
   disabled: state.timer.disabled,
+  responseTime: state.timer.timer,
+  nextButton: state.timer.nextButton,
+  player: state.player,
 });
 
 export default connect(mapStateToProps)(Game);
