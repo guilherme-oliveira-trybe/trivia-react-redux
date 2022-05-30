@@ -3,6 +3,7 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import App from '../App'
 import renderWithRouterAndRedux from './helpers/renderWithRouterAndRedux';
+import { tokenToLocalStorage } from '../services/localStorage';
 
 describe('Teste da página de [Login]', () => {
   it('se a rota "/" é renderizada', () => {
@@ -71,5 +72,63 @@ describe('Teste da página de [Login]', () => {
     const { pathname } = history.location;
     expect(pathname).toBe('/settings')
   });
+
+  it(`Salve o nome e email no estado da aplicação, com a chave name e gravatarEmail, assim que o jogador clicar em [Play]`, () => {
+    const playerName = 'teste';
+    const playerEmail = 'teste@teste.com.br';
+
+    const { store } = renderWithRouterAndRedux(<App />);
+    const name = screen.getByLabelText(/nome:/i);
+    const email = screen.getByLabelText(/email:/i);
+    const btnPlay = screen.getByRole('button', { name: /play/i });
+
+    userEvent.type(name, 'teste');
+    userEvent.type(email, 'teste@teste.com.br');
+    userEvent.click(btnPlay)
+
+    expect(store.getState().player.name).toBe(playerName);
+    expect(store.getState().player.gravatarEmail).toBe(playerEmail);
+  })
+
+  // it(`A rota deve ser mudada para "/game" após o clique no [Play]`, async () => {
+  //   const playerName = 'teste';
+  //   const playerEmail = 'teste@teste.com.br';
+
+  //   const { history } = renderWithRouterAndRedux(<App />);
+
+  //   const name = screen.getByLabelText(/nome:/i);
+  //   const email = screen.getByLabelText(/email:/i);
+  //   const btnPlay = screen.getByRole('button', { name: /play/i });
+
+  //   userEvent.type(name, playerName);
+  //   userEvent.type(email, playerEmail);
+  //   userEvent.click(btnPlay)
+
+  //   expect(history.location.pathname).toBe('/game');
+  // })
+
+  it(`Se é feita a requisição a API através da função "fetchToken"`, () => {
+    const token = 'a10a31947807e2ce4c1e8f1bb5a6f98a769fbcbf735411397e41ff15937a9c01';
+
+    jest.spyOn(global, 'fetch').mockResolvedValue({
+      json: jest.fn().mockResolvedValue(token)
+    });
+
+    const playerName = 'teste';
+    const playerEmail = 'teste@teste.com.br';
+
+    renderWithRouterAndRedux(<App />);
+
+    const name = screen.getByLabelText(/nome:/i);
+    const email = screen.getByLabelText(/email:/i);
+    const btnPlay = screen.getByRole('button', { name: /play/i });
+
+    userEvent.type(name, playerName);
+    userEvent.type(email, playerEmail);
+    userEvent.click(btnPlay)
+
+    expect(global.fetch).toHaveBeenCalled();
+    expect(global.fetch).toHaveBeenCalledTimes(1);
+  })
 
 })
