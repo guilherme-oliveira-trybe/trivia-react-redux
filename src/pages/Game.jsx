@@ -212,15 +212,19 @@ class Game extends Component {
 }
 
 Game.propTypes = {
-  dispatch: PropTypes.func.isRequired,
+  dispatch: PropTypes.func,
   history: PropTypes.shape({
     push: PropTypes.func,
-  }).isRequired,
-  responseTime: PropTypes.number.isRequired,
-  disabled: PropTypes.bool.isRequired,
-  nextButton: PropTypes.bool.isRequired,
-  player: PropTypes.objectOf.isRequired,
-};
+  }),
+  responseTime: PropTypes.number,
+  disabled: PropTypes.bool,
+  nextButton: PropTypes.bool,
+  player: PropTypes.shape({
+    name: PropTypes.string,
+    score: PropTypes.number,
+    picture: PropTypes.string,
+  }),
+}.isRequired;
 
 const mapStateToProps = (state) => ({
   disabled: state.timer.disabled,
