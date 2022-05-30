@@ -1,0 +1,92 @@
+.settings-header {
+  display: flex;
+  gap: 8px;
+  color: #676767;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 24px;
+  height: 100px;
+  background-color: #FFD96A;
+}
+
+.settigs-options {
+  display: flex;
+  flex-direction: column;
+  gap: 24px; 
+  width: 90vw;
+  margin: auto;
+}
+
+.settigs-options > select {
+  padding: 24px;
+  background-color: #fff;
+  border: 2px solid #FFD96A;
+  border-radius: 4px;
+  font-weight: bold;
+  color: #676767;
+  width: 100%;
+}
+
+.settings-btn-save {
+  display: block;
+  background-color: #FFD96A;
+  border: 4px solid #FFEFBF;
+  font-weight: bolder;
+  width: 40vw;
+  margin: 16px auto;
+  padding: 8px;
+  border-radius: 4px;
+  font-size: x-large;
+  color: #956C2F;
+}
+
+.settings-btn-save:hover {
+  cursor: pointer;
+  box-shadow: 1px 1px 10px #FFD96A;
+}
+.volume {
+  display: flex;
+  border: 2px solid #FFD96A;
+  border-radius: 4px;
+}
+
+.settings-volume {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: auto;
+  font-size: x-large;
+}
+
+.volume-icon {
+  color: #956C2F;
+}
+.volume-icon-mute {
+  color: #ED7171;
+}
+
+.settings-volume input[type=range] {
+  -webkit-appearance: none;
+    appearance: none;
+  background-color: #FFD96A;
+  border-radius: 4px;
+  height: 5px;
+}
+
+.volume-percent {
+  font-size: medium;
+  font-weight: bold;
+  color: #676767;
+}
+
+input[type=range]::-webkit-slider-thumb{
+
+  /* all:unset; limpa os estilos iniciais */
+  -webkit-appearance: none; /* remove a aparencia padão */
+  border: none;
+  
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background: #956C2F;
+}

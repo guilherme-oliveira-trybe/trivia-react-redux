@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
+import './Ranking.css';
 import { connect } from 'react-redux';
+import { BiBarChartAlt2, BiMedal, BiLogOutCircle } from 'react-icons/bi';
 import PropTypes from 'prop-types';
-import { newPlayer } from '../actions';
+import { newPlayer, resetAmount } from '../actions';
 
 class Ranking extends Component {
   constructor() {
@@ -23,29 +25,54 @@ class Ranking extends Component {
   goToLogin = () => {
     const { history, dispatch } = this.props;
     dispatch(newPlayer());
+    dispatch(resetAmount());
     history.push('/');
   }
 
   render() {
     const { ranking } = this.state;
     console.log(ranking);
+    const thirdPosition = 3;
     return (
-      <div>
-        <h2 data-testid="ranking-title">Ranking</h2>
+      <div className="ranking">
+        <header className="ranking-header">
+          <BiBarChartAlt2 />
+          <h2 data-testid="ranking-title">Ranking</h2>
+        </header>
+
+        <div className="ranking-players">
+          {ranking.map((player, index) => (
+            <div
+              key={ index }
+              className="ranking-player"
+            >
+              <span className="ranking-player-card-position">{`${index + 1}º`}</span>
+
+              <div
+                className={ (index + 1) <= thirdPosition
+                  ? 'ranking-player-card' : 'ranking-player-card-low-positions' }
+              >
+                <img
+                  className="player-image"
+                  src={ player.picture }
+                  alt={ player.name }
+                />
+                <h2 data-testid={ `player-name-${index}` }>{ player.name }</h2>
+                <h2 data-testid={ `player-score-${index}` }>{ `${player.score}pts` }</h2>
+                { index < thirdPosition && <BiMedal className="medal" /> }
+              </div>
+            </div>
+          ))}
+        </div>
         <button
           type="button"
           data-testid="btn-go-home"
+          className="ranking-btn-home"
           onClick={ this.goToLogin }
         >
+          <BiLogOutCircle />
           Home
         </button>
-        {ranking.map((player, index) => (
-          <div key={ index }>
-            <img src={ player.picture } alt={ player.name } />
-            <h2 data-testid={ `player-name-${index}` }>{ player.name }</h2>
-            <h2 data-testid={ `player-score-${index}` }>{ player.score }</h2>
-          </div>
-        ))}
       </div>
     );
   }

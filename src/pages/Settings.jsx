@@ -1,12 +1,118 @@
 import React, { Component } from 'react';
-// import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import { BiVolumeFull, BiVolumeMute, BiSliderAlt } from 'react-icons/bi';
+import Sound from 'react-sound';
+import track01 from '../asserts/sounds/track-01.wav';
+import { categories } from '../asserts/categories.json';
+import { changeSettings, changeMusicVolume } from '../actions';
+import './Settings.css';
 
 class Settings extends Component {
+  constructor() {
+    super();
+    this.state = {
+      category: '',
+      difficulty: '',
+      type: '',
+      volume: 60,
+    };
+  }
+
+  saveSettings = () => {
+    const { dispatch, history } = this.props;
+    const { category, difficulty, type, volume } = this.state;
+    console.log(volume);
+    dispatch(changeSettings({ category, difficulty, type }));
+    dispatch(changeMusicVolume(volume));
+    history.push('/');
+  }
+
+  handleChange = ({ target }) => {
+    const { name, value } = target;
+    console.log(target);
+    this.setState(({ [name]: value }));
+  }
+
   render() {
+    const { volume } = this.state;
     return (
-      <h2 data-testid="settings-title">Settings</h2>
+      <div>
+        <header className="settings-header">
+          <BiSliderAlt />
+          <h2 data-testid="settings-title">Settings</h2>
+        </header>
+        <div className="settigs-options">
+          <select
+            name="category"
+            className="form-control"
+            onClick={ this.handleChange }
+          >
+            {
+              categories.map(({ value, category }, idx) => (
+                <option key={ idx } value={ value }>{ category }</option>
+              ))
+            }
+          </select>
+          <select
+            name="difficulty"
+            className="form-control"
+            onClick={ this.handleChange }
+          >
+            <option value="">Any Difficulty</option>
+            <option value="easy">Easy</option>
+            <option value="medium">Medium</option>
+            <option value="hard">Hard</option>
+          </select>
+          <select
+            name="type"
+            className="form-control"
+            onClick={ this.handleChange }
+          >
+            <option value="">Any Type</option>
+            <option value="multiple">Multiple Choice</option>
+            <option value="boolean">True / False</option>
+          </select>
+          <fieldset className="volume">
+            <legend>Music volume</legend>
+            <div className="settings-volume">
+              { volume !== '0' ? <BiVolumeFull className="volume-icon" />
+                : <BiVolumeMute className="volume-icon-mute" /> }
+              <input
+                type="range"
+                id="volume"
+                name="volume"
+                min="0"
+                max="100"
+                value={ volume }
+                onChange={ this.handleChange }
+              />
+              <span className="volume-percent">{`${volume}%`}</span>
+            </div>
+          </fieldset>
+        </div>
+        <button
+          type="button"
+          className="settings-btn-save"
+          onClick={ this.saveSettings }
+        >
+          Save Settings
+        </button>
+        <Sound
+          url={ track01 }
+          playStatus="PLAYING"
+          volume={ volume }
+        />
+      </div>
     );
   }
 }
 
-export default Settings;
+Settings.propTypes = {
+  dispatch: PropTypes.func.isRequired,
+  history: PropTypes.shape({
+    push: PropTypes.func,
+  }).isRequired,
+};
+
+export default connect(null)(Settings);

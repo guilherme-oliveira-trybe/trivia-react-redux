@@ -1,0 +1,33 @@
+.header {
+  display: flex;
+  background-color: #58B5A3;
+  padding: 16px;
+  color: white;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.player-info {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.player-score {
+  font-size: x-large;
+  font-weight: bold;
+}
+
+.player-image {
+  border-radius: 100px;
+  border: 1px solid white;
+  width: 50px;
+}
+.number-quetions {
+  font-weight: bold;
+  font-size: 24px;
+}
+
+.number-quetions span {
+  font-size: 35px;
+}
