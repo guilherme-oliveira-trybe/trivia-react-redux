@@ -33,7 +33,6 @@ class Game extends Component {
     const token = localStorage.getItem('token');
     try {
       const questions = await fetchQuestions(token);
-      console.log(questions);
       const number = 3;
       if (questions.response_code === number) {
         history.push('/');
