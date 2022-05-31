@@ -3,7 +3,7 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import App from '../App'
 import renderWithRouterAndRedux from './helpers/renderWithRouterAndRedux';
-import players from './mocks';
+import { players } from './mocks';
 
 describe(`Teste da página de [Ranking]`, () => {
   beforeEach(() => {
