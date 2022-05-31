@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 import Sound from 'react-sound';
 import { fetchQuestions } from '../services/apiTrivia';
 import './Game.css';
@@ -9,7 +9,7 @@ import Timer from '../components/Timer';
 import { infoPlayerToLocalStorage } from '../services/localStorage';
 import { timer, disabled as diabledAction,
   disabledNextButton, updateScoreAssertions, addAmount } from '../actions';
-
+import gameType from '../types';
 import track01 from '../asserts/sounds/track-01.wav';
 import timerOver from '../asserts/sounds/timer-over.wav';
 
@@ -242,19 +242,7 @@ class Game extends Component {
 }
 
 Game.propTypes = {
-  dispatch: PropTypes.func,
-  history: PropTypes.shape({
-    push: PropTypes.func,
-  }),
-  responseTime: PropTypes.number,
-  disabled: PropTypes.bool,
-  nextButton: PropTypes.bool,
-  player: PropTypes.shape({
-    name: PropTypes.string,
-    score: PropTypes.number,
-    picture: PropTypes.string,
-  }),
-  settings: PropTypes.objectOf.isRequired,
+  game: gameType,
 }.isRequired;
 
 const mapStateToProps = (state) => ({
