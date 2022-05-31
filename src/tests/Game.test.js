@@ -14,9 +14,9 @@ describe(`Teste da página de [Game]`, () => {
 
     // link: https://benjaminjohnson.me/mocking-fetc
     const mocks = jest
-    .spyOn(global, 'fetch')
-    .mockImplementationOnce(() => Promise.resolve({ json: () => Promise.resolve(token) }))
-    .mockImplementationOnce(() => Promise.resolve({ json: () => Promise.resolve(responseApiValid) }))
+      .spyOn(global, 'fetch')
+      .mockImplementationOnce(() => Promise.resolve({ json: () => Promise.resolve(token) }))
+      .mockImplementationOnce(() => Promise.resolve({ json: () => Promise.resolve(responseApiValid) }))
 
     const name = screen.getByLabelText(/nome:/i);
     const email = screen.getByLabelText(/email:/i);
@@ -30,9 +30,9 @@ describe(`Teste da página de [Game]`, () => {
     expect(mocks).toHaveBeenCalledTimes(1);
 
     await waitForElementToBeRemoved(() => screen.getByRole('button', { name: /play/i }));
-    
+
     expect(mocks).toHaveBeenCalledTimes(2);
-    
+
     const { pathname } = history.location;
     expect(pathname).toBe('/game');
 
@@ -59,9 +59,9 @@ describe(`Teste da página de [Game]`, () => {
     const { history } = renderWithRouterAndRedux(<App />);
 
     const mocks = jest
-    .spyOn(global, 'fetch')
-    .mockImplementationOnce(() => Promise.resolve({ json: () => Promise.resolve(token) }))
-    .mockImplementationOnce(() => Promise.resolve({ json: () => Promise.resolve(responseApiInvalid) }))
+      .spyOn(global, 'fetch')
+      .mockImplementationOnce(() => Promise.resolve({ json: () => Promise.resolve(token) }))
+      .mockImplementationOnce(() => Promise.resolve({ json: () => Promise.resolve(responseApiInvalid) }))
 
     const name = screen.getByLabelText(/nome:/i);
     const email = screen.getByLabelText(/email:/i);
@@ -84,9 +84,9 @@ describe(`Teste da página de [Game]`, () => {
     const { history } = renderWithRouterAndRedux(<App />);
 
     const mocks = jest
-    .spyOn(global, 'fetch')
-    .mockImplementationOnce(() => Promise.resolve({ json: () => Promise.resolve(token) }))
-    .mockImplementationOnce(() => Promise.resolve({ json: () => Promise.resolve(responseApiValid) }))
+      .spyOn(global, 'fetch')
+      .mockImplementationOnce(() => Promise.resolve({ json: () => Promise.resolve(token) }))
+      .mockImplementationOnce(() => Promise.resolve({ json: () => Promise.resolve(responseApiValid) }))
 
     const name = screen.getByLabelText(/nome:/i);
     const email = screen.getByLabelText(/email:/i);
@@ -125,7 +125,7 @@ describe(`Teste da página de [Game]`, () => {
     expect(pathname).toBe('/feedback');
 
     const feedbackMessage = screen.getByTestId('feedback-text');
-    expect(feedbackMessage).toHaveTextContent('Well Done!'); 
+    expect(feedbackMessage).toHaveTextContent('Well Done!');
   })
 
   it('Testa de a mensagem [Could be better...] aparece na tela, caso o jogador erre todas as questões', async () => {
@@ -135,9 +135,9 @@ describe(`Teste da página de [Game]`, () => {
     const { history } = renderWithRouterAndRedux(<App />);
 
     const mocks = jest
-    .spyOn(global, 'fetch')
-    .mockImplementationOnce(() => Promise.resolve({ json: () => Promise.resolve(token) }))
-    .mockImplementationOnce(() => Promise.resolve({ json: () => Promise.resolve(responseApiValid) }))
+      .spyOn(global, 'fetch')
+      .mockImplementationOnce(() => Promise.resolve({ json: () => Promise.resolve(token) }))
+      .mockImplementationOnce(() => Promise.resolve({ json: () => Promise.resolve(responseApiValid) }))
 
     const name = screen.getByLabelText(/nome:/i);
     const email = screen.getByLabelText(/email:/i);
@@ -176,13 +176,13 @@ describe(`Teste da página de [Game]`, () => {
     expect(pathname).toBe('/feedback');
 
     const feedbackMessage = screen.getByTestId('feedback-text');
-    expect(feedbackMessage).toHaveTextContent('Could be better...'); 
+    expect(feedbackMessage).toHaveTextContent('Could be better...');
   })
 
   it('Testa de a API quebra quando não volta nada', () => {
     const playerName = 'teste';
     const playerEmail = 'teste@teste.com.br'
-    
+
     renderWithRouterAndRedux(<App />);
 
     global.fetch = jest.fn(() => new Error('API Quebrou'));
@@ -197,4 +197,54 @@ describe(`Teste da página de [Game]`, () => {
 
     expect(global.fetch).toBeCalledTimes(1);
   });
+
+  it('Testa se os botões de respostas são desabilitados após 30 segundos', async () => {
+    const playerName = 'teste';
+    const playerEmail = 'teste@teste.com.br';
+
+    renderWithRouterAndRedux(<App />);;
+
+    const mocks = jest
+      .spyOn(global, 'fetch')
+      .mockImplementationOnce(() => Promise.resolve({ json: () => Promise.resolve(token) }))
+      .mockImplementationOnce(() => Promise.resolve({ json: () => Promise.resolve(responseApiValid) }))
+
+    expect(mocks).toHaveBeenCalled();
+
+    // Documentação do jest: https://jestjs.io/docs/timer-mocks
+    jest.useFakeTimers();
+    const timerMock = jest.spyOn(global, 'setTimeout');
+
+    const name = screen.getByLabelText(/nome:/i);
+    const email = screen.getByLabelText(/email:/i);
+    const btnPlay = screen.getByRole('button', { name: /play/i });
+
+    userEvent.type(name, playerName);
+    userEvent.type(email, playerEmail);
+    userEvent.click(btnPlay)
+
+    await waitForElementToBeRemoved(() => screen.getByRole('button', { name: /play/i }));
+
+    expect(timerMock).toHaveBeenCalled();
+
+    const btnNext = screen.queryByRole('button', { name: /next/i });
+    expect(btnNext).not.toBeInTheDocument();
+
+    const correctAnswer = screen.getByTestId('correct-answer');
+    const wrongAnswer1 = screen.getByTestId('wrong-answer-0');
+    const wrongAnswer2 = screen.getByTestId('wrong-answer-1');
+    const wrongAnswer3 = screen.getByTestId('wrong-answer-2');
+
+    expect(correctAnswer).not.toBeDisabled();
+    expect(wrongAnswer1).not.toBeDisabled();
+    expect(wrongAnswer2).not.toBeDisabled();
+    expect(wrongAnswer3).not.toBeDisabled();
+
+    jest.advanceTimersByTime(32000);
+
+    expect(correctAnswer).toBeDisabled();
+    expect(wrongAnswer1).toBeDisabled();
+    expect(wrongAnswer2).toBeDisabled();
+    expect(wrongAnswer3).toBeDisabled();
+  })
 })
