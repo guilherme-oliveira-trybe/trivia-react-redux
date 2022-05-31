@@ -21,6 +21,7 @@ class Game extends Component {
       mixedAnswers: [],
       stopTimer: false,
       mountedTimer: true,
+      incorrectAnswers: [],
     };
   }
 
@@ -33,6 +34,7 @@ class Game extends Component {
     const token = localStorage.getItem('token');
     try {
       const questions = await fetchQuestions(token);
+      this.getIncorretAnswer(questions);
       const number = 3;
       if (questions.response_code === number) {
         history.push('/');
@@ -105,11 +107,12 @@ class Game extends Component {
     return false;
   }
 
-  dataTestid = (answer, index) => {
-    if (this.findIncorrectAndCorrectAnswers(answer)) {
-      return 'correct-answer';
+  dataTestid = (answer) => {
+    const { incorrectAnswers, indexQuestion } = this.state;
+    if (incorrectAnswers[indexQuestion].includes(answer)) {
+      return `wrong-answer-${incorrectAnswers[indexQuestion].indexOf(answer)}`;
     }
-    return `wrong-answer-${index}`;
+    return 'correct-answer';
   }
 
   verifyAnswers = (answer) => {
@@ -157,6 +160,14 @@ class Game extends Component {
     const number = 10;
     const score = number + (responseTime * dificult);
     dispatch(updateScoreAssertions(score));
+  }
+
+  getIncorretAnswer = ({ results }) => {
+    const incorrectAnswers = Object.values(results);
+    const arrIncorrectAnswer = incorrectAnswers.map((result) => result.incorrect_answers);
+    this.setState({
+      incorrectAnswers: arrIncorrectAnswer,
+    });
   }
 
   render() {
