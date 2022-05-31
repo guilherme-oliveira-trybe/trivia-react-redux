@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
+import './Login.css';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { BiPlay, BiSliderAlt } from 'react-icons/bi';
 import md5 from 'crypto-js/md5';
+import triviaImage from '../asserts/trivia.png';
 import Input from '../components/Input';
 import Button from '../components/Button';
 import { tokenToLocalStorage } from '../services/localStorage';
@@ -73,45 +76,53 @@ class Login extends Component {
   render() {
     const { isPlayButtonDisabled, name, email } = this.state;
     return (
-      <div>
-        <Input
-          className=""
-          data="input-player-name"
-          label="Nome: "
-          type="text"
-          onChange={ this.handleChange }
-          value={ name }
-          name="name"
-          id="nameInput"
-          required
-        />
-        <Input
-          className=""
-          data="input-gravatar-email"
-          label="Email: "
-          type="text"
-          onChange={ this.handleChange }
-          value={ email }
-          name="email"
-          id="emailInput"
-          required
-        />
-        <Button
-          data="btn-play"
-          className=""
-          type="button"
-          label="Play"
-          onClick={ this.sendPlayer }
-          disabled={ isPlayButtonDisabled }
-        />
-        <Button
-          data="btn-settings"
-          className=""
-          type="button"
-          label="Settings"
-          onClick={ this.goToSettings }
-          disabled={ false }
-        />
+      <div className="container">
+        <div className="login">
+          <img src={ triviaImage } alt="trivia logo" />
+          <Input
+            data="input-player-name"
+            label="Nome: "
+            type="text"
+            onChange={ this.handleChange }
+            value={ name }
+            name="name"
+            id="nameInput"
+            required
+          />
+          <Input
+            className=""
+            data="input-gravatar-email"
+            label="Email: "
+            type="text"
+            onChange={ this.handleChange }
+            value={ email }
+            name="email"
+            id="emailInput"
+            required
+          />
+          <Button
+            data="btn-play"
+            className="login-btn-play"
+            type="button"
+            icon={
+              <BiPlay className="" />
+            }
+            label="Play"
+            onClick={ this.sendPlayer }
+            disabled={ isPlayButtonDisabled }
+          />
+          <Button
+            data="btn-settings"
+            className="login-btn-settings"
+            icon={
+              <BiSliderAlt />
+            }
+            type="button"
+            label="Settings"
+            onClick={ this.goToSettings }
+            disabled={ false }
+          />
+        </div>
       </div>
     );
   }

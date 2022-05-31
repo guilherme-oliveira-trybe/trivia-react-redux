@@ -1,0 +1,17 @@
+.timer {
+  margin: 24px 0;
+  display: flex;
+  justify-content: center;
+}
+
+.timer-seconds {
+  font-size: 64px;
+  color: #99C953;
+  font-weight: bolder;
+}
+
+.timer-seconds-red {
+  font-size: 64px;
+  color: #ED7171;
+  font-weight: bolder;
+}

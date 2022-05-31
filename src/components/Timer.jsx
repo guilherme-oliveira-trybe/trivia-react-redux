@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import './Timer.css';
 import PropTypes from 'prop-types';
 import { timer, disabled as diabledAction, disabledNextButton } from '../actions';
 
@@ -51,9 +52,15 @@ class Timer extends Component {
   render() {
     const { seconds } = this.props;
     const secondsInString = seconds.toString();
-
+    const tenSeconds = 10;
     return (
-      <span>{ secondsInString.length === 2 ? seconds : `0${seconds}` }</span>
+      <div className="timer">
+        <span
+          className={ seconds > tenSeconds ? 'timer-seconds' : 'timer-seconds-red' }
+        >
+          { secondsInString.length === 2 ? seconds : `0${seconds}` }
+        </span>
+      </div>
     );
   }
 }

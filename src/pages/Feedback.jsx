@@ -1,8 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import Sound from 'react-sound';
+import './Feedback.css';
 import PropTypes from 'prop-types';
+import { BiBarChartAlt2, BiUndo } from 'react-icons/bi';
 import Header from '../components/Header';
-import { newPlayer } from '../actions';
+import { newPlayer, resetAmount } from '../actions';
+import successTrack from '../asserts/sounds/success.ogg';
 
 class Feedback extends React.Component {
   constructor() {
@@ -23,6 +27,7 @@ class Feedback extends React.Component {
   playAgain = () => {
     const { history, dispatch } = this.props;
     dispatch(newPlayer());
+    dispatch(resetAmount());
     history.push('/');
   }
 
@@ -48,27 +53,53 @@ class Feedback extends React.Component {
 
   render() {
     const { messageFeedaback } = this.state;
-    const { score, statusAcertos } = this.props;
+    const { score, statusAcertos, picture } = this.props;
     return (
       <div>
         <Header />
-        <strong data-testid="feedback-text">{messageFeedaback}</strong>
-        <strong data-testid="feedback-total-score">{ score }</strong>
-        <strong data-testid="feedback-total-question">{ statusAcertos }</strong>
-        <button
-          type="button"
-          data-testid="btn-play-again"
-          onClick={ this.playAgain }
-        >
-          Play Again
-        </button>
-        <button
-          type="button"
-          data-testid="btn-ranking"
-          onClick={ this.goToRanking }
-        >
-          Ranking
-        </button>
+        <div className="feedback">
+          <div className="feedback-message">
+            <img
+              className="feedback-play-image"
+              data-testid="header-profile-picture"
+              src={ picture }
+              alt="Imagem do Jogador"
+            />
+            <strong data-testid="feedback-text">{messageFeedaback}</strong>
+            <strong>
+              <span>You got </span>
+              <span data-testid="feedback-total-question">{ statusAcertos }</span>
+              <span> questions right</span>
+            </strong>
+            <p>
+              <span>Score </span>
+              <span data-testid="feedback-total-score">{ score }</span>
+              <span>pts</span>
+            </p>
+          </div>
+          <button
+            type="button"
+            className="feedback-btn-play-again"
+            data-testid="btn-play-again"
+            onClick={ this.playAgain }
+          >
+            <BiUndo />
+            Play Again
+          </button>
+          <button
+            type="button"
+            className="feedback-btn-ranking"
+            data-testid="btn-ranking"
+            onClick={ this.goToRanking }
+          >
+            <BiBarChartAlt2 />
+            Ranking
+          </button>
+        </div>
+        <Sound
+          url={ successTrack }
+          playStatus="PLAYING"
+        />
       </div>
     );
   }
@@ -76,16 +107,18 @@ class Feedback extends React.Component {
 
 Feedback.propTypes = {
   history: PropTypes.shape({
-    push: PropTypes.func,
-  }),
-  dispatch: PropTypes.func,
-  statusAcertos: PropTypes.number,
-  score: PropTypes.number,
-}.isRequired;
+    push: PropTypes.func.isRequired,
+  }).isRequired,
+  dispatch: PropTypes.func.isRequired,
+  statusAcertos: PropTypes.number.isRequired,
+  score: PropTypes.number.isRequired,
+  picture: PropTypes.string.isRequired,
+};
 
 const mapStateToProps = (state) => ({
   statusAcertos: state.player.assertions,
   score: state.player.score,
+  picture: state.player.picture,
 });
 
 export default connect(mapStateToProps)(Feedback);

@@ -1,13 +1,17 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import Sound from 'react-sound';
 import { fetchQuestions } from '../services/apiTrivia';
 import './Game.css';
 import Header from '../components/Header';
 import Timer from '../components/Timer';
 import { infoPlayerToLocalStorage } from '../services/localStorage';
 import { timer, disabled as diabledAction,
-  disabledNextButton, updateScoreAssertions } from '../actions';
+  disabledNextButton, updateScoreAssertions, addAmount } from '../actions';
+
+import track01 from '../asserts/sounds/track-01.wav';
+import timerOver from '../asserts/sounds/timer-over.wav';
 
 class Game extends Component {
   constructor() {
@@ -30,10 +34,10 @@ class Game extends Component {
   }
 
   callAPI = async () => {
-    const { history } = this.props;
+    const { history, settings } = this.props;
     const token = localStorage.getItem('token');
     try {
-      const questions = await fetchQuestions(token);
+      const questions = await fetchQuestions(token, settings);
       this.getIncorretAnswer(questions);
       const number = 3;
       if (questions.response_code === number) {
@@ -61,6 +65,7 @@ class Game extends Component {
         incorrectClassName: '',
       }), () => this.mixAnswers());
       dispatch(disabledNextButton(false));
+      dispatch(addAmount());
     } else {
       this.allInfoToStorage();
       dispatch(disabledNextButton(false));
@@ -178,45 +183,60 @@ class Game extends Component {
       mountedTimer,
       mixedAnswers,
     } = this.state;
-    const { disabled, nextButton } = this.props;
+    const { disabled, nextButton,
+      responseTime: seconds, settings: { volume } } = this.props;
     return (
-      <div>
+      <>
         <Header />
-        { mountedTimer && !loading
-          ? <Timer stop={ stopTimer } loading={ loading } />
-          : ''}
-        {!loading
-        && (
-          <div>
-            <h2 data-testid="question-category">{questions[indexQuestion].category}</h2>
-            <p data-testid="question-text">{questions[indexQuestion].question}</p>
-            <div data-testid="answer-options">
-              {mixedAnswers.map((answer, index) => (
-                <button
-                  className={ this.chooseClassName(answer) }
-                  key={ index }
-                  data-testid={ this.dataTestid(answer, index) }
-                  type="button"
-                  onClick={ () => this.handleClickAnswers(answer) }
-                  disabled={ disabled }
-                >
-                  { answer }
-                </button>
-              ))}
+        <div className="game">
+          { mountedTimer && !loading
+            ? <Timer stop={ stopTimer } loading={ loading } />
+            : ''}
+          {!loading
+          && (
+            <div className="game-question-answer">
+              <div className="question-and-category">
+                <h2 data-testid="question-category">
+                  { questions[indexQuestion].category }
+                </h2>
+                <p data-testid="question-text">{questions[indexQuestion].question}</p>
+              </div>
+              <div className="answer-options" data-testid="answer-options">
+                {mixedAnswers.map((answer, index) => (
+                  <button
+                    className={
+                      this.chooseClassName(answer) || 'answer-options-button-defult-style'
+                    }
+                    key={ index }
+                    data-testid={ this.dataTestid(answer, index) }
+                    type="button"
+                    onClick={ () => this.handleClickAnswers(answer) }
+                    disabled={ disabled }
+                  >
+                    { answer }
+                  </button>
+                ))}
+              </div>
               {nextButton
               && (
                 <button
                   type="button"
                   data-testid="btn-next"
+                  className="btn-next"
                   onClick={ this.nextQuestion }
                 >
                   Next
                 </button>
               )}
             </div>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
+        <Sound
+          url={ seconds > 0 ? track01 : timerOver }
+          playStatus="PLAYING"
+          volume={ volume }
+        />
+      </>
     );
   }
 }
@@ -234,6 +254,7 @@ Game.propTypes = {
     score: PropTypes.number,
     picture: PropTypes.string,
   }),
+  settings: PropTypes.objectOf.isRequired,
 }.isRequired;
 
 const mapStateToProps = (state) => ({
@@ -241,6 +262,7 @@ const mapStateToProps = (state) => ({
   responseTime: state.timer.timer,
   nextButton: state.timer.nextButton,
   player: state.player,
+  settings: state.settings,
 });
 
 export default connect(mapStateToProps)(Game);

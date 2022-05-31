@@ -9,13 +9,15 @@ import Ranking from './pages/Ranking';
 class App extends React.Component {
   render() {
     return (
-      <Switch>
-        <Route exact path="/" component={ Login } />
-        <Route path="/game" component={ Game } />
-        <Route path="/settings" component={ Settings } />
-        <Route path="/feedback" component={ Feedback } />
-        <Route path="/ranking" component={ Ranking } />
-      </Switch>
+      <div>
+        <Switch>
+          <Route exact path="/" component={ Login } />
+          <Route path="/game" component={ Game } />
+          <Route path="/settings" component={ Settings } />
+          <Route path="/feedback" component={ Feedback } />
+          <Route path="/ranking" component={ Ranking } />
+        </Switch>
+      </div>
     );
   }
 }
