@@ -2,11 +2,11 @@ import React from 'react';
 import { connect } from 'react-redux';
 import Sound from 'react-sound';
 import './Feedback.css';
-import PropTypes from 'prop-types';
 import { BiBarChartAlt2, BiUndo } from 'react-icons/bi';
 import Header from '../components/Header';
 import { newPlayer, resetAmount } from '../actions';
 import successTrack from '../asserts/sounds/success.ogg';
+import { feedbackType } from '../types';
 
 class Feedback extends React.Component {
   constructor() {
@@ -106,14 +106,8 @@ class Feedback extends React.Component {
 }
 
 Feedback.propTypes = {
-  history: PropTypes.shape({
-    push: PropTypes.func.isRequired,
-  }).isRequired,
-  dispatch: PropTypes.func.isRequired,
-  statusAcertos: PropTypes.number.isRequired,
-  score: PropTypes.number.isRequired,
-  picture: PropTypes.string.isRequired,
-};
+  feedbackType,
+}.isRequired;
 
 const mapStateToProps = (state) => ({
   statusAcertos: state.player.assertions,

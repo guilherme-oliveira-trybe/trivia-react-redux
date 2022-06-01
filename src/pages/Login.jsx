@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import './Login.css';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { BiPlay, BiSliderAlt } from 'react-icons/bi';
 import md5 from 'crypto-js/md5';
@@ -10,6 +9,7 @@ import Button from '../components/Button';
 import { tokenToLocalStorage } from '../services/localStorage';
 import { player } from '../actions';
 import { fetchToken } from '../services/apiTrivia';
+import { historyType } from '../types';
 
 class Login extends Component {
   constructor() {
@@ -129,10 +129,7 @@ class Login extends Component {
 }
 
 Login.propTypes = {
-  history: PropTypes.shape({
-    push: PropTypes.func,
-  }),
-  dispatch: PropTypes.func,
+  login: historyType,
 }.isRequired;
 
 const mapStateToProps = (state) => ({

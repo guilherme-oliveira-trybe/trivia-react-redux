@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-// import PropTypes from 'prop-types';
 import Sound from 'react-sound';
 import { fetchQuestions } from '../services/apiTrivia';
 import './Game.css';
@@ -9,7 +8,7 @@ import Timer from '../components/Timer';
 import { infoPlayerToLocalStorage } from '../services/localStorage';
 import { timer, disabled as diabledAction,
   disabledNextButton, updateScoreAssertions, addAmount } from '../actions';
-import gameType from '../types';
+import { gameType } from '../types';
 import track01 from '../asserts/sounds/track-01.wav';
 import timerOver from '../asserts/sounds/timer-over.wav';
 
@@ -94,8 +93,7 @@ class Game extends Component {
     const { indexQuestion, questions } = this.state;
     const number = 0.5;
     const answers = [...questions[indexQuestion]
-      .incorrect_answers, questions[indexQuestion]
-      .correct_answer]
+      .incorrect_answers, questions[indexQuestion].correct_answer]
       .sort(() => Math.random() - number);
     this.setState({
       mixedAnswers: answers,
@@ -176,12 +174,7 @@ class Game extends Component {
   }
 
   render() {
-    const { loading,
-      questions,
-      indexQuestion,
-      stopTimer,
-      mountedTimer,
-      mixedAnswers,
+    const { loading, questions, indexQuestion, stopTimer, mountedTimer, mixedAnswers,
     } = this.state;
     const { disabled, nextButton,
       responseTime: seconds, settings: { volume } } = this.props;
@@ -242,7 +235,7 @@ class Game extends Component {
 }
 
 Game.propTypes = {
-  game: gameType,
+  gameType,
 }.isRequired;
 
 const mapStateToProps = (state) => ({

@@ -7,11 +7,15 @@ import {
   func,
 } from 'prop-types';
 
-const gameType = shape({
-  dispatch: func,
+export const historyType = {
   history: shape({
     push: func,
   }),
+  dispatch: func,
+};
+
+export const gameType = shape({
+  historyType,
   responseTime: number,
   disabled: bool,
   nextButton: bool,
@@ -25,4 +29,9 @@ const gameType = shape({
   })),
 });
 
-export default gameType;
+export const feedbackType = shape({
+  historyType,
+  statusAcertos: number,
+  score: number,
+  picture: string,
+});

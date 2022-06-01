@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import './Ranking.css';
 import { connect } from 'react-redux';
 import { BiBarChartAlt2, BiMedal, BiLogOutCircle } from 'react-icons/bi';
-import PropTypes from 'prop-types';
 import { newPlayer, resetAmount } from '../actions';
+import { historyType } from '../types';
 
 class Ranking extends Component {
   constructor() {
@@ -78,10 +78,7 @@ class Ranking extends Component {
 }
 
 Ranking.propTypes = {
-  history: PropTypes.shape({
-    push: PropTypes.func.isRequired,
-  }).isRequired,
-  dispatch: PropTypes.func.isRequired,
-};
+  historyType,
+}.isRequired;
 
 export default connect()(Ranking);

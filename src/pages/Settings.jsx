@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
 import { BiVolumeFull, BiVolumeMute, BiSliderAlt } from 'react-icons/bi';
 import Sound from 'react-sound';
 import track01 from '../asserts/sounds/track-01.wav';
 import { categories } from '../asserts/categories.json';
 import { changeSettings, changeMusicVolume } from '../actions';
 import './Settings.css';
+import { historyType } from '../types';
 
 class Settings extends Component {
   constructor() {
@@ -109,10 +109,7 @@ class Settings extends Component {
 }
 
 Settings.propTypes = {
-  dispatch: PropTypes.func.isRequired,
-  history: PropTypes.shape({
-    push: PropTypes.func,
-  }).isRequired,
-};
+  historyType,
+}.isRequired;
 
 export default connect(null)(Settings);
