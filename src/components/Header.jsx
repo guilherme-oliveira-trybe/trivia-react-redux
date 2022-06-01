@@ -9,8 +9,10 @@ class Header extends Component {
     const { score, name, picture, amount } = this.props;
 
     return (
-      <header className="header">
-        <div className="player">
+      <header className="header-container">
+
+        <div className="header-content">
+
           <div className="player-info">
             <img
               className="player-image"
@@ -20,14 +22,21 @@ class Header extends Component {
             />
             <h3 data-testid="header-player-name">{name}</h3>
           </div>
-        </div>
-        <span className="player-score" data-testid="header-score">{`${score}pts`}</span>
-        <div>
-          <p className="number-quetions">
-            <span>{amount}</span>
-            /5
-          </p>
-          <CheckMusicMute />
+
+          <span
+            className="player-score"
+            data-testid="header-score"
+          >
+            {`${score} pts`}
+          </span>
+          <div className="amout-questions">
+            <p className="number-quetions">
+              <span>{amount}</span>
+              /5
+            </p>
+            <CheckMusicMute />
+          </div>
+
         </div>
       </header>
     );

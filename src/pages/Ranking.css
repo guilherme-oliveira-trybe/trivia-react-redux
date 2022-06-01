@@ -1,5 +1,6 @@
 /* .ranking {
 } */
+
 .ranking-header {
   display: flex;
   gap: 8px;
@@ -11,6 +12,10 @@
   background-color: #ED7171;
 }
 
+.ranking-container {
+  width: 100%;
+}
+
 .ranking-player {
   display: flex;
   align-items: center;
@@ -19,34 +24,34 @@
 
 .ranking-players {
   height: calc(100vh - 40vh);
-  width: 90vw;
+  max-width: 1020px;
   overflow: auto;
   margin: 0 auto;
-
+  padding: 0 20px;
 }
 
 .ranking-player-card {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 30px;
+  grid-template-columns: 1fr 2fr 1fr 20px;
   color: white;
   width: 100%;
   background-color: #58B5A3;
   outline: 4px solid #C1DBD5;
   border-radius: 4px;
-  padding: 8px;
+  padding: 8px 25px;
   margin: 16px 8px;
   align-items: center;
 }
 
 .ranking-player-card-low-positions { 
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 2fr 1fr 20px;
   color: #C6C6C6;
   width: 100%;
   background-color: #E9E9E9;
   outline: 4px solid #F4F4F4;
   border-radius: 4px;
-  padding: 8px;
+  padding: 8px 25px;
   margin: 16px 8px;
   align-items: center;
 }
@@ -62,6 +67,15 @@
   font-size: x-large;
 }
 
+.button-container {
+  width: 100%;
+}
+
+.button-content {
+  max-width: 1020px;
+  margin: 0 auto;
+}
+
 .ranking-btn-home {
   display: flex;
   justify-content: center;
@@ -71,7 +85,7 @@
   border: 4px solid #FFEFBF;
   font-weight: bolder;
   border-radius: 4px;
-  width: 50vw;
+  width: 100%;
   margin: 16px auto;
   padding: 8px;
   font-size: x-large;

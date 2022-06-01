@@ -76,9 +76,11 @@ class Login extends Component {
   render() {
     const { isPlayButtonDisabled, name, email } = this.state;
     return (
-      <div className="container">
+      <div className="login-container">
         <div className="login">
-          <img src={ triviaImage } alt="trivia logo" />
+          <div className="logo-img-container">
+            <img src={ triviaImage } alt="trivia logo" />
+          </div>
           <Input
             data="input-player-name"
             label="Nome: "

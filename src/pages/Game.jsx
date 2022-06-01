@@ -181,18 +181,21 @@ class Game extends Component {
     return (
       <>
         <Header />
-        <div className="game">
-          { mountedTimer && !loading
-            ? <Timer stop={ stopTimer } loading={ loading } />
-            : ''}
-          {!loading
+        <div className="game-container">
+          <div className="game-content">
+            { mountedTimer && !loading
+              ? <Timer stop={ stopTimer } loading={ loading } />
+              : ''}
+            {!loading
           && (
             <div className="game-question-answer">
               <div className="question-and-category">
                 <h2 data-testid="question-category">
                   { questions[indexQuestion].category }
                 </h2>
-                <p data-testid="question-text">{questions[indexQuestion].question}</p>
+                <div className="questions-card">
+                  <p data-testid="question-text">{questions[indexQuestion].question}</p>
+                </div>
               </div>
               <div className="answer-options" data-testid="answer-options">
                 {mixedAnswers.map((answer, index) => (
@@ -223,6 +226,7 @@ class Game extends Component {
               )}
             </div>
           )}
+          </div>
         </div>
         <Sound
           url={ seconds > 0 ? track01 : timerOver }

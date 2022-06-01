@@ -10,7 +10,7 @@ import { historyType } from '../types';
 
 class Settings extends Component {
   constructor() {
-    super();
+    super(); 
     this.state = {
       category: '',
       difficulty: '',
@@ -37,7 +37,7 @@ class Settings extends Component {
   render() {
     const { volume } = this.state;
     return (
-      <div>
+      <div className="settigs-container">
         <header className="settings-header">
           <BiSliderAlt />
           <h2 data-testid="settings-title">Settings</h2>

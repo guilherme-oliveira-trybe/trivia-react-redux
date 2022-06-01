@@ -39,39 +39,45 @@ class Ranking extends Component {
           <h2 data-testid="ranking-title">Ranking</h2>
         </header>
 
-        <div className="ranking-players">
-          {ranking.map((player, index) => (
-            <div
-              key={ index }
-              className="ranking-player"
-            >
-              <span className="ranking-player-card-position">{`${index + 1}º`}</span>
-
+        <div className="ranking-container">
+          <div className="ranking-players">
+            {ranking.map((player, index) => (
               <div
-                className={ (index + 1) <= thirdPosition
-                  ? 'ranking-player-card' : 'ranking-player-card-low-positions' }
+                key={ index }
+                className="ranking-player"
               >
-                <img
-                  className="player-image"
-                  src={ player.picture }
-                  alt={ player.name }
-                />
-                <h2 data-testid={ `player-name-${index}` }>{ player.name }</h2>
-                <h2 data-testid={ `player-score-${index}` }>{ `${player.score}pts` }</h2>
-                { index < thirdPosition && <BiMedal className="medal" /> }
+                <span className="ranking-player-card-position">{`${index + 1}º`}</span>
+
+                <div
+                  className={ (index + 1) <= thirdPosition
+                    ? 'ranking-player-card' : 'ranking-player-card-low-positions' }
+                >
+                  <img
+                    className="player-image"
+                    src={ player.picture }
+                    alt={ player.name }
+                  />
+                  <h2 data-testid={ `player-name-${index}` }>{ player.name }</h2>
+                  <h2 data-testid={ `player-score-${index}` }>{ `${player.score}pts` }</h2>
+                  { index < thirdPosition && <BiMedal className="medal" /> }
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-        <button
-          type="button"
-          data-testid="btn-go-home"
-          className="ranking-btn-home"
-          onClick={ this.goToLogin }
-        >
-          <BiLogOutCircle />
-          Home
-        </button>
+        <div className="button-container">
+          <div className="button-content">
+            <button
+              type="button"
+              data-testid="btn-go-home"
+              className="ranking-btn-home"
+              onClick={ this.goToLogin }
+            >
+              <BiLogOutCircle />
+              Home
+            </button>
+          </div>
+        </div>
       </div>
     );
   }

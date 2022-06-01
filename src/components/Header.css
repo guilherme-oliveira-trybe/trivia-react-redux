@@ -1,10 +1,15 @@
-.header {
+.header-container {
+  background-color: #6C63FF;
+  width: 100%;
+}
+ 
+.header-content {
+  max-width: 1020px;
   display: flex;
-  background-color: #58B5A3;
-  padding: 16px;
-  color: white;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
+  margin: 0 auto;
+  padding: 20px;
 }
 
 .player-info {
@@ -13,9 +18,14 @@
   align-items: center;
 }
 
+.player-info h3 {
+  color: white;
+}
+
 .player-score {
   font-size: x-large;
   font-weight: bold;
+  color: white;
 }
 
 .player-image {
@@ -26,6 +36,13 @@
 .number-quetions {
   font-weight: bold;
   font-size: 24px;
+  color: white;
+}
+
+.amout-questions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
 }
 
 .number-quetions span {

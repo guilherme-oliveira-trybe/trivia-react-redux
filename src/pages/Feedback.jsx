@@ -77,24 +77,26 @@ class Feedback extends React.Component {
               <span>pts</span>
             </p>
           </div>
-          <button
-            type="button"
-            className="feedback-btn-play-again"
-            data-testid="btn-play-again"
-            onClick={ this.playAgain }
-          >
-            <BiUndo />
-            Play Again
-          </button>
-          <button
-            type="button"
-            className="feedback-btn-ranking"
-            data-testid="btn-ranking"
-            onClick={ this.goToRanking }
-          >
-            <BiBarChartAlt2 />
-            Ranking
-          </button>
+          <div className="buttons-content">
+            <button
+              type="button"
+              className="feedback-btn-play-again"
+              data-testid="btn-play-again"
+              onClick={ this.playAgain }
+            >
+              <BiUndo />
+              Play Again
+            </button>
+            <button
+              type="button"
+              className="feedback-btn-ranking"
+              data-testid="btn-ranking"
+              onClick={ this.goToRanking }
+            >
+              <BiBarChartAlt2 />
+              Ranking
+            </button>
+          </div>
         </div>
         <Sound
           url={ successTrack }
